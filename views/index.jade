@@ -1,0 +1,7 @@
+extends layout
+
+append content 
+  meta(name='csrf-token', content=token)
+  #app 
+  script(src="/build/bundle.js")
+
