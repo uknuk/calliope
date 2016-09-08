@@ -19,18 +19,19 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-  var fields = _.keys(req.body),
-      values = _.values(req.body);
+  var values = [req.body['time']],
+      sql =  _.template(
+        "insert into events (${vars}) values (?,?,?,?)"
+      )({vars: ['time', 'play_id', 'free', 'active']});
 
-  var sql =  _.template(
-    "insert into times (${vars}) values (?,?,?,?,?)"
-  )({'vars': fields.join()});
-
-
-  db.exec(sql, values)
-    .then(() => respond(res))
+  db.exec("select id, capacity from plays")
+    .then(function(r) {
+      var row = r.rows[0];
+      values = values.concat([row.play_id, row.capacity, 'true']);
+      return db.exec(sql, values);
+    })
+    .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
 });
-
 
 module.exports = router;
