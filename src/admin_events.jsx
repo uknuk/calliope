@@ -13,7 +13,8 @@ module.exports = React.createClass({
       error: null,
       loading: false,
       alerts: {},
-      events: []
+      events: [],
+      name: null
     }
   },
 
@@ -27,6 +28,8 @@ module.exports = React.createClass({
     return (
       <div className="container-fluid">
         { this.renderAlerts() }
+        <h3><i>{this.state.name}</i></h3>
+        <p></p>
         <h4>New event </h4>
         <form className="form-inline">
           <div className="form-group">
@@ -78,7 +81,10 @@ module.exports = React.createClass({
   },
 
   getData: function(resp) {
-    this.setState({events: resp});
+    this.setState({
+      name: resp.name,
+      events: resp.events
+    });
   }
 
 });

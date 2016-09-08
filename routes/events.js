@@ -3,7 +3,9 @@ var router = require('express').Router(),
     db = require('./db');
 
 router.get('/', function(req, res) {
-  var sql = "select id, time, free from events where time > now() and active = true",
+  var name,
+      capacity,
+      sql = "select id, time, free";
       details = req.query.details == 'true';
 
   if (details && !req.isAuthenticated()) {
@@ -11,11 +13,19 @@ router.get('/', function(req, res) {
   }
 
   if (details)
-    sql = "select * from events where time > now() and active = true"
+    sql = "select *";
 
-  db.exec(sql)
-    .then( r => res.json(r.rows) )
-    .catch( err => db.error(err, res));
+  sql += " from events where time > now() and active = true";
+
+  db.exec("select name, capacity from plays")
+    .then(r => r.rows[0])
+    .then(function(r) {
+      name = r.name;
+      capacity = r.capacity;
+      return db.exec(sql)
+    })
+    .then(r => res.json({name: name, capacity: capacity, events: r.rows}))
+    .catch(err => db.error(err, res));
 });
 
 router.post('/', function(req, res) {
