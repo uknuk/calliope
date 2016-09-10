@@ -1,5 +1,4 @@
 var $ = require('jquery'),
-    moment = require('moment-timezone'),
     lib = exports;
 
 

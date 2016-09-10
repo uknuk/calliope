@@ -7,10 +7,12 @@ var ReactDOM = require('react-dom'),
     Events = require('./events.jsx'),
     Event = require('./event.jsx'),
     Admin = require('./admin.jsx'),
-    Booker = require('./booker.jsx'),
-    AdminEvents = require('./admin_events.jsx');
+    Booker = require('./booker.jsx');
+    
 
 $(function() {
+  window.$ = window.jQuery = require('jquery')
+  require('bootstrap');
 
   $.ajaxSetup({
     beforeSend: function(xhr) {
@@ -25,7 +27,7 @@ $(function() {
       <Route path="/ui/events" component={Events} />
       <Route path="/ui/events/:id/booker" component={Booker} />
       <Route path="/ui/admin" component={Admin} />
-      <Route path="/ui/admin/events" component={AdminEvents} />
+      <Route path="/ui/admin/events" component={Events} />
       <Route path="/ui/admin/events/:id" component={Event} />
     </Router>
   ), document.getElementById('app'));

@@ -25,6 +25,7 @@
     "faye": "1.1.2",
     "foreman": "1.4.1",
     "heroku-ssl-redirect": "0.0.3",
+    "i18n-react": "0.3.0-ts1",
     "jade": "~1.11.0",
     "jquery": "2.2.3",
     "knex": "0.10.0",
