@@ -25,7 +25,6 @@ $(function() {
   ReactDOM.render((
     <Router history={router.browserHistory} >
       <Route path="/ui/events" component={Events} />
-      <Route path="/ui/events/:id/booker" component={Booker} />
       <Route path="/ui/admin" component={Admin} />
       <Route path="/ui/admin/events" component={Events} />
       <Route path="/ui/admin/events/:id" component={Event} />

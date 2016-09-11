@@ -20,7 +20,7 @@ module.exports = React.createClass({
       rows = this._sort(rows);
 
     return (
-      <table className='table table-bordered'>
+      <table className={"table " + (this.props.style || "table-bordered")}>
 	    <thead>
       <tr>
       {

@@ -44,4 +44,15 @@ router.post('/', function(req, res) {
     .catch( err => db.error(err, res));
 });
 
+router.post('/book', function(req, res) {
+  var sql = _.template(
+    "insert into bookings (${vars}) values (?,?,?,?,?,?)"
+  )({vars: _.keys(req.body).join()});
+
+  db.exec(sql, _.values(req.body))
+    .then(() => res.json({result: 'ok'}))
+    .catch( err => db.error(err, res));
+});
+
+
 module.exports = router;

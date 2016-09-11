@@ -1,6 +1,5 @@
 var React = require('react'),
     Link = require('react-router').Link,
-    T = require('i18n-react').default,
     lib = require('./lib.jsx'),
     Table = require('./table.jsx'),
     Alerts = require('./alerts.jsx'),
@@ -33,16 +32,15 @@ module.exports = React.createClass({
         <h2><i>{this.state.name}</i></h2>
         <p></p>
         {this.state.admin? this.renderAdmin() : this.renderUser()}
-        
       </div>
     )
   },
 
   renderUser: function() {
     return (
-      <div className="col-sm-6">
+      <div className="col-sm-4">
         <h4>Föreställningar:</h4>
-        <Table body={this.getRows()} />
+        <Table body={this.getRows()} style="borderless"/>
         <Booker/>
       </div>
     );
