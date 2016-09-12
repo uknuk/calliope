@@ -14,11 +14,10 @@ router.get('/', function(req, res) {
 
   if (details) {
     sql = "select *";
-    cols += "capacity";
+    cols += "capacity, ";
   }
-  else
-    cols += "price, discount"
-
+  
+  cols += "price, discount"
   sql += " from events where time > now() and active = true";
 
   db.exec("select " + cols + " from plays")
@@ -28,6 +27,12 @@ router.get('/', function(req, res) {
       return db.exec(sql)
     })
     .then(r => res.json({play: play, events: r.rows}))
+    .catch(err => db.error(err, res));
+});
+
+router.get("/:id", function(req, res) {
+  db.exec("select * from bookings where event_id = " + req.params.id)
+    .then(r => res.json(r.rows))
     .catch(err => db.error(err, res));
 });
 
@@ -53,6 +58,12 @@ router.post('/book', function(req, res) {
   )({vars: _.keys(req.body).join()});
 
   db.exec(sql, _.values(req.body))
+    .then(() => res.json({result: 'ok'}))
+    .catch( err => db.error(err, res));
+});
+
+router.delete('/:id', function(req, res) {
+  db.exec("delete from bookings where id = ?", [req.body.id])
     .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
 });

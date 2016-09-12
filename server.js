@@ -54,6 +54,7 @@ app.use(sslRedirect())
 
 app.use('/', require('./routes'));
 app.use('/api/events', require('./routes/events'));
+app.use('/api/bookings', require('./routes/bookings'));
 
 
 /// Catch 404 and forward to error handler

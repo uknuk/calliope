@@ -95,7 +95,7 @@ module.exports = React.createClass({
     var pass = true,
         data = {
           event_id: this.state.id,
-          created_at: (new Date()).toISOString()
+          created_at: new Date().toISOString()
         };
 
     e.preventDefault();
@@ -125,7 +125,7 @@ module.exports = React.createClass({
     if (data.normal + data.reduced == 0)
       this.setAlert('warning', "Inga platser reserverade!");
     else
-      lib.save("/events/book", 'post', data, this);
+      lib.save("/bookings", 'post', data, this);
   },
 
   onSaved: function() {

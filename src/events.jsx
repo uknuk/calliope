@@ -64,7 +64,7 @@ module.exports = React.createClass({
         <p></p>
         <h4>Events: </h4>
         { _.isEmpty(this.state.events) ? null :
-          <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Revenue']}
+          <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Revenue', '']}
                  body={this.getAdminRows()}
           />
         }
@@ -105,15 +105,27 @@ module.exports = React.createClass({
 
 
   getAdminRows: function() {
-    return _.map(this.state.events, function(event) {
+    return _.map(this.state.events, _.bind(function(event) {
       return [
         new Date(event.time).toLocaleString('de'),
         event.free,
         event.normal || 0,
         event.reduced || 0,
-        event.revenue || 0
+        event.revenue || 0,
+        {
+          val: (
+            <div className="btn-toolbar">
+              <Link className="btn btn-xs btn-info" to={"/ui/admin/events/" + event.id} title="View detail">
+                <span className="glyphicon glyphicon-zoom-in"></span>
+              </Link>
+              <button type="button" className="btn btn-xs btn-danger" onClick={this.disable.bind(null,event.id)}>
+                <span className="glyphicon glyphicon-trash"></span>
+              </button>
+            </div>
+          )
+        }
       ];
-    });
+    }, this));
   },
 
   fetch: function() {
@@ -134,11 +146,16 @@ module.exports = React.createClass({
   getData: function(resp) {
     lib.data.price = resp.play.price
     lib.data.reduced = (resp.play.price*(1 - resp.play.discount)).toFixed(2);
+    lib.data.events = _.keyBy(resp.events, "id");
 
     this.setState({
       name: resp.play.name,
       events: resp.events
     });
+  },
+
+  disable: function(id) {
+    console.log(id);
   }
 
 });
