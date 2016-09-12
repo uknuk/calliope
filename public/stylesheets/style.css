@@ -7,6 +7,13 @@ a {
   color: #00B7FF;
 }
 
-.borderless td {
+
+.table.table-borderless td, .table.table-borderless th {
     border: none;
+}
+
+
+.form-group.required .control-label:before {
+    content:"*";
+    color:red;
 }

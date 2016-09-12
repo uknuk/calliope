@@ -1,6 +1,7 @@
 var $ = require('jquery'),
     lib = exports;
 
+lib.data = {}
 
 lib.request = function(config) {
   if (!config.method)

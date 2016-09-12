@@ -3,8 +3,8 @@ var router = require('express').Router(),
     db = require('./db');
 
 router.get('/', function(req, res) {
-  var name,
-      capacity,
+  var play,
+      cols = "name, "
       sql = "select id, time, free";
       details = req.query.details == 'true';
 
@@ -12,19 +12,22 @@ router.get('/', function(req, res) {
     return res.status(401).end();
   }
 
-  if (details)
+  if (details) {
     sql = "select *";
+    cols += "capacity";
+  }
+  else
+    cols += "price, discount"
 
   sql += " from events where time > now() and active = true";
 
-  db.exec("select name, capacity from plays")
+  db.exec("select " + cols + " from plays")
     .then(r => r.rows[0])
     .then(function(r) {
-      name = r.name;
-      capacity = r.capacity;
+      play = r;
       return db.exec(sql)
     })
-    .then(r => res.json({name: name, capacity: capacity, events: r.rows}))
+    .then(r => res.json({play: play, events: r.rows}))
     .catch(err => db.error(err, res));
 });
 
@@ -46,7 +49,7 @@ router.post('/', function(req, res) {
 
 router.post('/book', function(req, res) {
   var sql = _.template(
-    "insert into bookings (${vars}) values (?,?,?,?,?,?)"
+    "insert into bookings (${vars}) values (?,?,?,?,?,?,?)"
   )({vars: _.keys(req.body).join()});
 
   db.exec(sql, _.values(req.body))

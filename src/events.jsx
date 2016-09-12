@@ -40,7 +40,7 @@ module.exports = React.createClass({
     return (
       <div className="col-sm-4">
         <h4>Föreställningar:</h4>
-        <Table body={this.getRows()} style="borderless"/>
+        <Table body={this.getRows()} style="table-borderless"/>
         <Booker/>
       </div>
     );
@@ -132,10 +132,13 @@ module.exports = React.createClass({
   },
 
   getData: function(resp) {
+    lib.data.price = resp.play.price
+    lib.data.reduced = (resp.play.price*(1 - resp.play.discount)).toFixed(2);
+
     this.setState({
-      name: resp.name,
+      name: resp.play.name,
       events: resp.events
     });
   }
-  
+
 });

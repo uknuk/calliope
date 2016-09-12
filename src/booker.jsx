@@ -8,6 +8,12 @@ var React = require('react'),
 module.exports = React.createClass({
   mixins: [Alerts],
 
+  labels: {
+    name: 'Namn',
+    email: 'E-post',
+    phone: 'Telefon'
+  },
+
   getInitialState: function() {
     return {
       saved: false,
@@ -35,20 +41,25 @@ module.exports = React.createClass({
           <div className="modal-content">
             <div className="modal-header">
               <button type="button" className="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div className="modal-body">
               { this.renderAlerts() }
-              <form className="form-horizontal col-sm-12">
-                {this.input('name', 'Namnet', 'text')}
-                {this.input('email', 'Email', 'email')}
-                {this.input('phone', 'Telefon', 'tel')}
-                {this.input('normal', "Platser för normal pris", 'number', 0)}
-                {this.input('reduced', "Platser för rabatt pris: (barn, pensionär)", 'number', 0)}
+              <form className="form-horizontal">
+                {this.input('name', 'text')}
+                {this.input('email', 'email')}
+                {this.input('phone', 'tel')}
+                <legend><h4>Platser</h4></legend>
+                {this.number('normal', "Normal " + lib.data.price, 1)}
+                {this.number('reduced', "Rabatt (studerande, pensionär) " + lib.data.reduced, 1)}
+                {this.number('group', "Group (min 10) " + lib.data.reduced, 10)}
               </form>
             </div>
 
             <div className="modal-footer">
-              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-default" data-dismiss="modal">Avbryt</button>
               <button type="button" className="btn btn-primary" onClick={this.save}
-                      disabled={this.state.saved}>Save
+                      disabled={this.state.saved}>Spara
               </button>
             </div>
 
@@ -57,26 +68,64 @@ module.exports = React.createClass({
       </div>
     );
   },
+ 
+  input: function(name, type) {
+    return (
+      <div className="form-group required">
+        <label forHtml={name} className="control-label col-sm-4">{this.labels[name] + ':'}</label>
+        <div className="col-sm-6">
+          <input type={type} className="form-control" id={name} ref={name} name={name} />
+        </div>
+      </div>
+    );
+  },
 
-  input: function(name, label, type, val) {
+  number: function(name, label, min) {
     return (
       <div className="form-group">
-        <label forHtml={name} className="control-label col-sm-4">{label + ':'}</label>
-        <div className="col-sm-6">
-          <input type={type} className="form-control" id={name} ref={name} name={name}
-                 min="0" step="1" defaultValue={val} required />
+        <label forHtml={name} className="control-label col-sm-4">{label}</label>
+        <div className="col-sm-2">
+          <input type="number" className="form-control" id={name} ref={name} name={name} min={min} />
         </div>
       </div>
     );
   },
 
   save: function(e) {
-    var data = {event_id: this.state.id};
+    var pass = true,
+        data = {
+          event_id: this.state.id,
+          created_at: (new Date()).toISOString()
+        };
+
     e.preventDefault();
-    _.forOwn(this.refs, function(val, prop) {
-      data[prop] = val.value;
-    });
-    lib.save("/events/book", 'post', data, this);
+
+    _.each(['name','email','phone'], _.bind(function(field) {
+      if (!pass)
+        return;
+
+      if (!this.refs[field].value) {
+        this.setAlert('warning', this.labels[field] + " borde fyllas");
+        pass = false;
+      }
+      else
+        data[field] = this.refs[field].value;
+    }, this));
+
+    if (!pass)
+      return;
+
+    _.each(['normal', 'reduced', 'group'],  _.bind(function(field) {
+      data[field] = this.refs[field].value || 0;
+    }, this));
+
+    data.reduced += data.group;
+    delete data.group;
+
+    if (data.normal + data.reduced == 0)
+      this.setAlert('warning', "Inga platser reserverade!");
+    else
+      lib.save("/events/book", 'post', data, this);
   },
 
   onSaved: function() {
