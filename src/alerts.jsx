@@ -13,7 +13,7 @@ module.exports = {
 
   handleError: function(error) {
     if (error.status == 401)
-      this.setUnauthorised();
+      this.context.router.push('/ui/admin');
     else
       this.setError('Sorry something went wrong, let us know and we fix it');
   },

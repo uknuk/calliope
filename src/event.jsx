@@ -34,7 +34,7 @@ module.exports = React.createClass({
       <h4>{"Bookings for " + date}</h4>
       <Table
           head={["Name", "Email", "Phone", "Normal", "Reduced", "Total", "Booked", '']}
-          body={this.getRows()} search sort
+          body={this.getRows()} search
       />
       </div>
     );

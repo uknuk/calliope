@@ -1,12 +1,9 @@
-var pg = require('knex')({
+exports.pg = require('knex')({
   client: 'pg',
   connection: process.env.DATABASE_URL,
   searchPath: 'knex,public'
 });
 
-exports.exec = function(sql, vals) {
-  return pg.raw(sql, vals);
-}
 
 exports.error = function(err, res) {
   console.log(err);

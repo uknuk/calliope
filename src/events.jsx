@@ -8,6 +8,10 @@ var React = require('react'),
 module.exports = React.createClass({
   mixins: [Alerts],
 
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
+
   getInitialState: function() {
     return {
       admin: _.includes(this.props.route.path, 'admin'),

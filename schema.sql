@@ -1,3 +1,6 @@
+
+drop table bookings;
+drop table events;
 drop table plays;
 
 create table plays (
@@ -8,20 +11,16 @@ price       numeric(4, 2),
 discount    real
 );
 
-drop table events;
-
 create table events (
 id          serial primary key,
 play_id     smallint references plays(id),
 time        timestamptz,
 free        smallint,
-normal      smallint,
-reduced     smallint,
-revenue     numeric(7, 2),
+normal      smallint default 0,
+reduced     smallint default 0,
+revenue     numeric(7, 2) default 0.0,
 active      boolean
 );
-
-drop table bookings;
 
 create table bookings (
 id       serial primary key,
@@ -34,4 +33,9 @@ reduced  smallint,
 created_at timestamptz,
 updated_at timestamptz
 );
+
+
+
+
+
 

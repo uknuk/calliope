@@ -28,7 +28,8 @@ module.exports = React.createClass({
       var target = $(ReactDOM.findDOMNode(event.relatedTarget));
       this.setState({
         id: target.data("id"),
-        free: target.data("free")
+        free: target.data("free"),
+        // saved: false
       });
     }, this));
   },
@@ -116,8 +117,13 @@ module.exports = React.createClass({
       return;
 
     _.each(['normal', 'reduced', 'group'],  _.bind(function(field) {
-      data[field] = this.refs[field].value || 0;
+      data[field] = parseInt(this.refs[field].value || 0);
     }, this));
+
+    if (data.group > 0 && data.group < 10) {
+      this.setAlert('warning', "Group måste ha mera än 9 platser");
+      return;
+    }
 
     data.reduced += data.group;
     delete data.group;
