@@ -55,7 +55,7 @@ module.exports = React.createClass({
                    <legend><h4>Platser</h4></legend>
                    {this.number('normal', "Normal " + lib.data.price, 1)}
                    {this.number('reduced', T.se.reduced + lib.data.reduced, 1)}
-                   {this.number('group', "Group (min 10) " + lib.data.reduced, 10)}
+                   {this.number('group', T.se.group + lib.data.reduced, 10)}
                  </form>
                </div>
 

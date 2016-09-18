@@ -44,8 +44,8 @@ router.put('/:id', function(req, res) {
     return trx.raw(
       "select b.normal as bnormal, b.reduced as breduced, free, e.normal as enormal, \
        e.reduced as ereduced, revenue, price, discount from bookings b \
-       join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=? and e.id=?",
-      [req.params.id, par.event_id]
+       join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=?",
+      [req.params.id]
     )
       .then(function(r) {
         d = r.rows[0];
@@ -68,12 +68,34 @@ router.put('/:id', function(req, res) {
          );
       })
   })
-    .then(() => res.json({result: 'ok'}))
-    .catch( err => db.error(err, res));
 });
 
 router.delete('/:id', function(req, res) {
-  db.pg.raw("delete from bookings where id = ?", [req.params.id])
+  var d,
+      par = req.body;
+
+  db.pg.transaction(function(trx) {
+    return trx.raw(
+       "select b.normal as bnormal, b.reduced as breduced, event_id, free, \
+       e.normal as enormal, e.reduced as ereduced, revenue, price, discount from bookings b \
+       join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=?",
+      [req.params.id]
+    )
+      .then(function(r) {
+        d = r.rows[0];
+        return trx.raw("delete from bookings where id = ?", [req.params.id]);
+      })
+      .then(function() {
+        d.enormal -= d.bnormal;
+        d.ereduced -= d.breduced;
+        d.free +=  d.bnormal + d.breduced;
+        d.revenue = parseFloat(d.revenue) - (d.price*d.bnormal + d.breduced*(1 - d.discount));
+        return trx.raw(
+          "update events set free=?, normal=?, reduced=?, revenue=? where id=?",
+          [d.free, d.enormal, d.ereduced, d.revenue, d.event_id]
+        );
+      })
+  })
     .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
 });

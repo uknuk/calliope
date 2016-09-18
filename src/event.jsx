@@ -61,7 +61,7 @@ module.exports = React.createClass({
               >
                 <span className="glyphicon glyphicon-edit"></span>
               </button>
-            <button type="button" className="btn btn-xs btn-danger" onClick={this.disable.bind(null, entry.id)}>
+            <button type="button" className="btn btn-xs btn-danger" onClick={this.delete.bind(null, entry.id)}>
               <span className="glyphicon glyphicon-trash"></span>
             </button>
             </div>
@@ -71,7 +71,7 @@ module.exports = React.createClass({
     }, this));
   },
 
-  disable: function(id) {
+  delete: function(id) {
     lib.save("/bookings/" + id, 'delete', {}, this);
   },
 
