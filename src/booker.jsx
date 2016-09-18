@@ -3,90 +3,101 @@ var React = require('react'),
     Link = require('react-router').Link,
     $ = require('jquery'),
     lib = require('./lib.jsx'),
+    T = require('./translate.js'),
     Alerts = require('./alerts.jsx');
 
 module.exports = React.createClass({
   mixins: [Alerts],
 
-  labels: {
-    name: 'Namn',
-    email: 'E-post',
-    phone: 'Telefon'
-  },
-
   getInitialState: function() {
     return {
       saved: false,
       alerts: {},
-      id: null,
+      eventId: null,
       free: 0
     }
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
+    $(ReactDOM.findDOMNode(this)).on('hidden.bs.modal', this.props.onClose);
+
     $(ReactDOM.findDOMNode(this)).on('show.bs.modal', _.bind(function(event) {
-      var target = $(ReactDOM.findDOMNode(event.relatedTarget));
+      var target = $(ReactDOM.findDOMNode(event.relatedTarget)),
+          eventId = target.data("event"),
+          bookId = target.data("booking"),
+          free = lib.data.events[eventId].free;
+
       this.setState({
-        id: target.data("id"),
-        free: target.data("free"),
-        // saved: false
+        eventId: eventId,
+        free: free,
+        booking: bookId ? lib.data.bookings[bookId] : {}
+        // saved: false (useful for debugging)
       });
     }, this));
   },
 
-
   render: function() {
     return (
       <div id="booker" className="modal fade" tabIndex="-1">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal">&times;</button>
-            </div>
+        {this.state.eventId ? (
+           <div className="modal-dialog">
+             <div className="modal-content">
+               <div className="modal-header">
+                 <button type="button" className="close" data-dismiss="modal">&times;</button>
+               </div>
 
-            <div className="modal-body">
-              { this.renderAlerts() }
-              <form className="form-horizontal">
-                {this.input('name', 'text')}
-                {this.input('email', 'email')}
-                {this.input('phone', 'tel')}
-                <legend><h4>Platser</h4></legend>
-                {this.number('normal', "Normal " + lib.data.price, 1)}
-                {this.number('reduced', "Rabatt (studerande, pensionär) " + lib.data.reduced, 1)}
-                {this.number('group', "Group (min 10) " + lib.data.reduced, 10)}
-              </form>
-            </div>
+               <div className="modal-body">
+                 { this.renderAlerts() }
+                 <form className="form-horizontal">
+                   {this.input('name', 'text')}
+                   {this.input('email', 'email')}
+                   {this.input('phone', 'tel')}
+                   <legend><h4>Platser</h4></legend>
+                   {this.number('normal', "Normal " + lib.data.price, 1)}
+                   {this.number('reduced', T.se.reduced + lib.data.reduced, 1)}
+                   {this.number('group', "Group (min 10) " + lib.data.reduced, 10)}
+                 </form>
+               </div>
 
-            <div className="modal-footer">
-              <button type="button" className="btn btn-default" data-dismiss="modal">Avbryt</button>
-              <button type="button" className="btn btn-primary" onClick={this.save}
-                      disabled={this.state.saved}>Spara
-              </button>
-            </div>
-
-          </div>
-        </div>
+               <div className="modal-footer">
+                 <button type="button" className="btn btn-default" data-dismiss="modal">
+                   {this.state.saved ? T.se.close : T.se.cancel}
+                 </button>
+                 <button type="button" className="btn btn-primary" onClick={this.save}
+                         disabled={this.state.saved}>
+                   {T.se.save}
+                 </button>
+               </div>
+             </div>
+           </div>
+         ) : null
+        }
       </div>
     );
   },
- 
+
   input: function(name, type) {
+    var val = this.state.booking ? this.state.booking[name] : '';
     return (
       <div className="form-group required">
-        <label forHtml={name} className="control-label col-sm-4">{this.labels[name] + ':'}</label>
+        <label forHtml={name} className="control-label col-sm-4">{T.se[name] + ':'}</label>
         <div className="col-sm-6">
-          <input type={type} className="form-control" id={name} ref={name} name={name} />
+          <input type={type} className="form-control" id={name} ref={name} name={name}
+                 defaultValue={val}
+          />
         </div>
       </div>
     );
   },
 
   number: function(name, label, min) {
+    var val = this.state.booking ? this.state.booking[name] : '';
     return (
       <div className="form-group">
         <label forHtml={name} className="control-label col-sm-4">{label}</label>
         <div className="col-sm-2">
-          <input type="number" className="form-control" id={name} ref={name} name={name} min={min} />
+          <input type="number" className="form-control" id={name} ref={name} name={name}
+                 min={min} defaultValue={val} />
         </div>
       </div>
     );
@@ -95,7 +106,7 @@ module.exports = React.createClass({
   save: function(e) {
     var pass = true,
         data = {
-          event_id: this.state.id,
+          event_id: this.state.eventId,
           created_at: new Date().toISOString()
         };
 
@@ -121,7 +132,7 @@ module.exports = React.createClass({
     }, this));
 
     if (data.group > 0 && data.group < 10) {
-      this.setAlert('warning', "Group måste ha mera än 9 platser");
+      this.setAlert('warning', T.se.mingroup);
       return;
     }
 
@@ -129,14 +140,18 @@ module.exports = React.createClass({
     delete data.group;
 
     if (data.normal + data.reduced == 0)
-      this.setAlert('warning', "Inga platser reserverade!");
-    else
-      lib.save("/bookings", 'post', data, this);
+      this.setAlert('warning', T.se.noplaces);
+    else {
+      if (_.isEmpty(this.state.booking))
+        lib.save("/bookings", 'post', data, this);
+      else
+        lib.save("/bookings/" + this.state.booking.id, "put", data, this);
+    }
   },
 
   onSaved: function() {
     this.setState({saved: true});
-    this.setAlert("success", "Beställningen mottagen");
+    this.setAlert("success", T.se.reserved);
   }
 
 });

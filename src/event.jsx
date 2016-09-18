@@ -3,6 +3,7 @@ var React = require('react'),
     Link = require('react-router').Link,
     lib = require('./lib.jsx'),
     Alerts = require('./alerts.jsx'),
+    Booker = require('./booker.jsx')
     Table = require('./table.jsx');
 
 module.exports = React.createClass({
@@ -24,8 +25,8 @@ module.exports = React.createClass({
 
   render: function() {
     var date = lib.data.events ?
-               new Date(lib.data.events[this.state.id].time).toLocaleString("de") : '';
-    
+               lib.showDate(new Date(lib.data.events[this.state.id].time)) : '';
+
     if (this.state.loading)
       return (<div> Loading ... </div>);
     return (
@@ -36,6 +37,8 @@ module.exports = React.createClass({
           head={["Name", "Email", "Phone", "Normal", "Reduced", "Total", "Booked", '']}
           body={this.getRows()} search
       />
+      <Booker onClose={this.close}/>
+      <Link className="btn btn-default" to="/ui/admin/events">Back</Link>
       </div>
     );
   },
@@ -49,12 +52,19 @@ module.exports = React.createClass({
         entry.normal,
         entry.reduced,
         entry.normal*lib.data.price + entry.reduced*lib.data.reduced,
-        new Date(entry.created_at).toLocaleString('de'),
+        lib.showDate(new Date(entry.created_at)),
         {
           val: (
+            <div className="btn-toolbar">
+              <button type="button" className="btn btn-xs btn-success" data-toggle="modal"
+                      data-target="#booker" data-event={this.state.id} data-booking={entry.id}
+              >
+                <span className="glyphicon glyphicon-edit"></span>
+              </button>
             <button type="button" className="btn btn-xs btn-danger" onClick={this.disable.bind(null, entry.id)}>
               <span className="glyphicon glyphicon-trash"></span>
             </button>
+            </div>
           )
         }
       ];
@@ -63,6 +73,11 @@ module.exports = React.createClass({
 
   disable: function(id) {
     lib.save("/bookings/" + id, 'delete', {}, this);
+  },
+
+  close: function() {
+    // besides updating this function also needed for refreshing default values in modal
+    this.fetch();
   },
 
   onSaved: function() {
@@ -74,6 +89,7 @@ module.exports = React.createClass({
   },
 
   getData: function(resp) {
+    lib.data.bookings = _.keyBy(resp, "id");
     this.setState({bookings: resp})
   }
 });

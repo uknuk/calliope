@@ -52,3 +52,12 @@ lib.save = function(url, method, data, caller) {
         caller.handleError(error);
       })
 };
+
+lib.showDate = function(date) {
+  var mins = date.getMinutes().toString();
+  if (mins.length == 1)
+    mins = '0' + mins;
+  
+  return date.getDate() + '.' + (date.getMonth() + 1) + ' ' + date.getHours() + ':' + mins;
+};
+

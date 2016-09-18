@@ -1,6 +1,7 @@
 var React = require('react'),
     Link = require('react-router').Link,
     lib = require('./lib.jsx'),
+    T = require('./translate.js'),
     Table = require('./table.jsx'),
     Alerts = require('./alerts.jsx'),
     Booker = require('./booker.jsx');
@@ -43,7 +44,7 @@ module.exports = React.createClass({
   renderUser: function() {
     return (
       <div className="col-sm-4">
-        <h4>Föreställningar:</h4>
+        <h4>{T.se.performances}</h4>
         <Table body={this.getRows()} style="table-borderless"/>
         <Booker/>
       </div>
@@ -82,23 +83,23 @@ module.exports = React.createClass({
 
       if (event.free > 10) {
         mode = "success";
-        txt = "Ledig";
+        txt = T.se.free;
       }
       else if (event.free > 0) {
         mode = "warning";
-        txt = event.free + " platser kvar";
+        txt = event.free + T.se.remains;
       }
       else {
         mode = "danger";
-        txt = "Slutsåld";
+        txt = T.se.soldout;
       }
 
       return [
         {
           val: (
             <button className={"btn btn-lg btn-" + mode} data-toggle="modal"
-            data-target="#booker" data-id={event.id} data-free={event.free} >
-            {new Date(event.time).toLocaleString('de')}
+            data-target="#booker" data-event={event.id} >
+            {lib.showDate(new Date(event.time))}
           </button>
           ),
         },
@@ -111,7 +112,7 @@ module.exports = React.createClass({
   getAdminRows: function() {
     return _.map(this.state.events, _.bind(function(event) {
       return [
-        new Date(event.time).toLocaleString('de'),
+        lib.showDate(new Date(event.time)),
         event.free,
         event.normal || 0,
         event.reduced || 0,
@@ -159,6 +160,7 @@ module.exports = React.createClass({
   },
 
   disable: function(id) {
+    // update event
     console.log(id);
   }
 
