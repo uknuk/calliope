@@ -104,7 +104,8 @@ module.exports = React.createClass({
   },
 
   save: function(e) {
-    var pass = true,
+    var total,
+        pass = true,
         data = {
           event_id: this.state.eventId,
           created_at: new Date().toISOString()
@@ -139,8 +140,12 @@ module.exports = React.createClass({
     data.reduced += data.group;
     delete data.group;
 
-    if (data.normal + data.reduced == 0)
+    total = data.normal + data.reduced;
+
+    if (total == 0)
       this.setAlert('warning', T.se.noplaces);
+    else if (total > this.state.free)
+      this.setAlert('warning', T.se.over);
     else {
       if (_.isEmpty(this.state.booking))
         lib.save("/bookings", 'post', data, this);

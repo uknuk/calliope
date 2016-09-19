@@ -18,7 +18,7 @@ router.get('/', function(req, res) {
   }
 
   cols += "price, discount"
-  sql += " from events where time > now() and active = true";
+  sql += " from events where time > now() and active = true order by time";
 
   db.pg.raw("select " + cols + " from plays")
     .then(function(r) {
@@ -45,6 +45,12 @@ router.post('/', function(req, res) {
       values = values.concat([row.id, row.capacity, true]);
       return db.pg.raw(sql, values);
     })
+    .then(() => res.json({result: 'ok'}))
+    .catch( err => db.error(err, res));
+});
+
+router.put('/:id', function(req, res) {
+  db.pg.raw("update events set active = false where id = ?", [req.params.id])
     .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
 });

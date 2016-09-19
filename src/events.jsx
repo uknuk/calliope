@@ -46,7 +46,7 @@ module.exports = React.createClass({
       <div className="col-sm-4">
         <h4>{T.se.performances}</h4>
         <Table body={this.getRows()} style="table-borderless"/>
-        <Booker/>
+        <Booker onClose={this.close}/>
       </div>
     );
   },
@@ -148,6 +148,10 @@ module.exports = React.createClass({
     this.fetch();
   },
 
+  close: function() {
+    this.fetch();
+  },
+
   getData: function(resp) {
     lib.data.price = resp.play.price
     lib.data.reduced = (resp.play.price*(1 - resp.play.discount)).toFixed(2);
@@ -160,8 +164,7 @@ module.exports = React.createClass({
   },
 
   disable: function(id) {
-    // update event
-    console.log(id);
+   lib.save("/events/" + id, "put", {}, this);
   }
 
 });

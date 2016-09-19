@@ -7,6 +7,7 @@ exports.se = {
   cancel: "Avbryt",
   save: "Spara",
   noplaces: "Inga platser reserverade!",
+  over: "Beställningen överskrider återstående platser",
   group: "Grupp (min 10) ",
   mingroup: "Grupp måste ha mera än 9 platser",
   reserved: "Beställningen mottagen",
