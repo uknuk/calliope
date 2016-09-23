@@ -27,7 +27,6 @@ module.exports = React.createClass({
     this.fetch();
   },
 
-
   render: function() {
     if (this.state.loading)
       return (<div> Loading ... </div>);
@@ -103,7 +102,9 @@ module.exports = React.createClass({
           </button>
           ),
         },
-        txt
+        {
+          val: (<span className="large-text">{txt}</span>)
+        }
       ];
     });
   },
@@ -138,7 +139,6 @@ module.exports = React.createClass({
   },
 
   add: function(e) {
-    e.preventDefault();
     lib.save("/events", "post", {
       time: this.refs.date.value + 'T' + this.refs.time.value
     }, this);

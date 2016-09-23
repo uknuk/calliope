@@ -30,6 +30,7 @@ email    varchar(40),
 phone    varchar(20),
 normal   smallint,
 reduced  smallint,
+message  text,
 created_at timestamptz,
 updated_at timestamptz
 );

@@ -17,7 +17,7 @@ router.post('/', function(req, res) {
       .then(function(r) {
         ev = r.rows[0];
         return trx.raw(
-          `insert into bookings (${_.keys(req.body).join()}) values (?,?,?,?,?,?,?)`,
+          `insert into bookings (${_.keys(req.body).join()}) values (?,?,?,?,?,?,?,?)`,
           _.values(par)
         )
       })
@@ -50,8 +50,8 @@ router.put('/:id', function(req, res) {
       .then(function(r) {
         d = r.rows[0];
         return trx.raw(
-          "update bookings set name=?, email=?, phone=?, normal=?, reduced=? where id=?",
-          [par.name, par.email, par.phone, par.normal, par.reduced, req.params.id]
+          "update bookings set name=?, email=?, phone=?, normal=?, reduced=?, message=? where id=?",
+          [par.name, par.email, par.phone, par.normal, par.reduced, par.message, req.params.id]
         )
       })
       .then(function() {
@@ -68,6 +68,8 @@ router.put('/:id', function(req, res) {
          );
       })
   })
+    .then(() => res.json({result: 'ok'}))
+    .catch( err => db.error(err, res));
 });
 
 router.delete('/:id', function(req, res) {

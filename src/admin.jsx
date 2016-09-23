@@ -39,7 +39,6 @@ module.exports = React.createClass({
   },
 
   auth: function(e) {
-    e.preventDefault();
     lib.save("/login", 'post', {
       username: 'admin',
       password: this.refs.password.value

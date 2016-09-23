@@ -8,7 +8,7 @@ var ReactDOM = require('react-dom'),
     Event = require('./event.jsx'),
     Admin = require('./admin.jsx'),
     Booker = require('./booker.jsx');
-    
+
 
 $(function() {
   window.$ = window.jQuery = require('jquery')

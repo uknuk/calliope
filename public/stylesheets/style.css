@@ -12,6 +12,10 @@ a {
     border: none;
 }
 
+.large-text {
+    font-size: 20px;
+}
+
 
 .form-group.required .control-label:before {
     content:"*";

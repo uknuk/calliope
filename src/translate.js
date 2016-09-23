@@ -14,5 +14,6 @@ exports.se = {
   free: "Ledig",
   soldout: "Slutsåld",
   remains: " platser kvar",
-  performances: "Föreställningar:"
+  performances: "Föreställningar:",
+  msg: "Meddelande:"
 }

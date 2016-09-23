@@ -52,6 +52,14 @@ module.exports = React.createClass({
                    {this.input('name', 'text')}
                    {this.input('email', 'email')}
                    {this.input('phone', 'tel')}
+                   <div className="form-group">
+                     <label className="control-label col-sm-2" forHtml="msg">{T.se.msg}</label>
+                     <div className="col-sm-6">
+                       <textarea rows='5' cols='60' id="msg" ref="message"
+                                 defaultValue={this.state.booking.message}
+                       />
+                     </div>
+                   </div>
                    <legend><h4>Platser</h4></legend>
                    {this.number('normal', "Normal " + lib.data.price, 1)}
                    {this.number('reduced', T.se.reduced + lib.data.reduced, 1)}
@@ -80,7 +88,7 @@ module.exports = React.createClass({
     var val = this.state.booking ? this.state.booking[name] : '';
     return (
       <div className="form-group required">
-        <label forHtml={name} className="control-label col-sm-4">{T.se[name] + ':'}</label>
+        <label forHtml={name} className="control-label col-sm-2">{T.se[name] + ':'}</label>
         <div className="col-sm-6">
           <input type={type} className="form-control" id={name} ref={name} name={name}
                  defaultValue={val}
@@ -106,12 +114,13 @@ module.exports = React.createClass({
   save: function(e) {
     var total,
         pass = true,
+        free = this.state.free,
+        booking = this.state.booking,
+        isNew = _.isEmpty(booking),
         data = {
           event_id: this.state.eventId,
           created_at: new Date().toISOString()
         };
-
-    e.preventDefault();
 
     _.each(['name','email','phone'], _.bind(function(field) {
       if (!pass)
@@ -128,6 +137,8 @@ module.exports = React.createClass({
     if (!pass)
       return;
 
+    data.message = this.refs.message.value;
+
     _.each(['normal', 'reduced', 'group'],  _.bind(function(field) {
       data[field] = parseInt(this.refs[field].value || 0);
     }, this));
@@ -142,15 +153,18 @@ module.exports = React.createClass({
 
     total = data.normal + data.reduced;
 
+    if (!isNew)
+      free += booking.normal + booking.reduced;
+
     if (total == 0)
       this.setAlert('warning', T.se.noplaces);
-    else if (total > this.state.free)
+    else if (total > free)
       this.setAlert('warning', T.se.over);
     else {
-      if (_.isEmpty(this.state.booking))
+      if (isNew)
         lib.save("/bookings", 'post', data, this);
       else
-        lib.save("/bookings/" + this.state.booking.id, "put", data, this);
+        lib.save("/bookings/" + booking.id, "put", data, this);
     }
   },
 

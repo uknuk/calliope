@@ -3,11 +3,16 @@ var React = require('react'),
     Link = require('react-router').Link,
     lib = require('./lib.jsx'),
     Alerts = require('./alerts.jsx'),
-    Booker = require('./booker.jsx')
-    Table = require('./table.jsx');
+    Booker = require('./booker.jsx'),
+    Table = require('./table.jsx'),
+    Popover = require('./popover.jsx');
 
 module.exports = React.createClass({
   mixins: [Alerts],
+
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   getInitialState: function() {
     return {
@@ -20,12 +25,19 @@ module.exports = React.createClass({
   },
 
   componentWillMount: function() {
+    if (!lib.data.price) {
+      this.context.router.push('/ui/admin/events');
+      return;
+    }
+    
     this.fetch();
   },
 
   render: function() {
     var date = lib.data.events ?
-               lib.showDate(new Date(lib.data.events[this.state.id].time)) : '';
+               lib.showDate(new Date(lib.data.events[this.state.id].time)) : '',
+        headers =
+    ["Name", "Email", "Phone", "Normal", "Reduced", "Payment", "Message", "Booked", ''];
 
     if (this.state.loading)
       return (<div> Loading ... </div>);
@@ -33,10 +45,7 @@ module.exports = React.createClass({
       <div className="container-fluid">
       { this.renderAlerts() }
       <h4>{"Bookings for " + date}</h4>
-      <Table
-          head={["Name", "Email", "Phone", "Normal", "Reduced", "Total", "Booked", '']}
-          body={this.getRows()} search
-      />
+      <Table head={headers} body={this.getRows()} search />
       <Booker onClose={this.close}/>
       <Link className="btn btn-default" to="/ui/admin/events">Back</Link>
       </div>
@@ -51,7 +60,11 @@ module.exports = React.createClass({
         entry.phone,
         entry.normal,
         entry.reduced,
-        entry.normal*lib.data.price + entry.reduced*lib.data.reduced,
+        entry.normal*lib.data.price + entry.reduced*lib.data.reduced + "€",
+        {
+          val: _.isEmpty(entry.message) ? null :
+          (<Popover placement="left">{entry.message}</Popover>)
+        },
         lib.showDate(new Date(entry.created_at)),
         {
           val: (
