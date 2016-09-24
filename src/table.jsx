@@ -30,7 +30,7 @@ module.exports = React.createClass({
       }
       </tr>
       {inputs ? (
-        <tr>
+        <tr className="search-row">
           {
              _.map(inputs, _.bind(function(col, idx) {
                return (<td key={idx}> {this._renderInput(col, idx)} </td>);

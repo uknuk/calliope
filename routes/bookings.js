@@ -1,7 +1,6 @@
 var router = require('express').Router(),
     _ = require('lodash'),
     db = require('./db');
-   
 
 
 router.post('/', function(req, res) {
@@ -10,7 +9,7 @@ router.post('/', function(req, res) {
 
   db.pg.transaction(function(trx) {
     return trx.raw(
-      "select free, normal, reduced, revenue, price, discount from events \
+      "select free, normal, reduced, price, discount from events \
        join plays on events.play_id = plays.id where events.id = ?",
       [par.event_id]
     )
@@ -25,10 +24,9 @@ router.post('/', function(req, res) {
         ev.normal += par.normal;
         ev.reduced += par.reduced;
         ev.free -= par.normal + par.reduced;
-        ev.revenue = parseFloat(ev.revenue) + ev.price*(par.normal + par.reduced*(1 - ev.discount));
         return trx.raw(
-          "update events set free=?, normal=?, reduced=?, revenue=? where id=?",
-          [ev.free, ev.normal, ev.reduced, ev.revenue, par.event_id]
+          "update events set free=?, normal=?, reduced=? where id=?",
+          [ev.free, ev.normal, ev.reduced, par.event_id]
         );
       })
   })
@@ -43,7 +41,7 @@ router.put('/:id', function(req, res) {
   db.pg.transaction(function(trx) {
     return trx.raw(
       "select b.normal as bnormal, b.reduced as breduced, free, e.normal as enormal, \
-       e.reduced as ereduced, revenue, price, discount from bookings b \
+       e.reduced as ereduced, price, discount from bookings b \
        join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=?",
       [req.params.id]
     )
@@ -61,10 +59,9 @@ router.put('/:id', function(req, res) {
         d.enormal += ndiff;
         d.ereduced += rdiff;
         d.free -= ndiff + rdiff;
-        d.revenue = parseFloat(d.revenue) + d.price*(ndiff + rdiff*(1 - d.discount));
         return trx.raw(
-          "update events set free=?, normal=?, reduced=?, revenue=? where id=?",
-           [d.free, d.enormal, d.ereduced, d.revenue, par.event_id]
+          "update events set free=?, normal=?, reduced=? where id=?",
+           [d.free, d.enormal, d.ereduced, par.event_id]
          );
       })
   })

@@ -18,7 +18,6 @@ time        timestamptz,
 free        smallint,
 normal      smallint default 0,
 reduced     smallint default 0,
-revenue     numeric(7, 2) default 0.0,
 active      boolean
 );
 

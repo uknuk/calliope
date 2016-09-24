@@ -12,8 +12,12 @@ module.exports = {
   },
 
   handleError: function(error) {
-    if (error.status == 401)
-      this.context.router.push('/ui/admin');
+    if (error.status == 401) {
+      if (this.props.route.path == '/ui/admin')
+        this.setError("Wrong password");
+      else
+        this.context.router.push('/ui/admin');
+    }
     else
       this.setError('Sorry something went wrong, let us know and we fix it');
   },

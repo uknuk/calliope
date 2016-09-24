@@ -1,0 +1,12 @@
+@page {
+	margin: 20px auto;
+}
+
+body {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 14px;
+}
+
+.btn, .search-row {
+    display: none;
+}

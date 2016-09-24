@@ -62,7 +62,7 @@ module.exports = React.createClass({
             <label htmlFor="time">Time:&nbsp;</label>
             <input type="time" className="form-control" ref="time" required/>
             &nbsp;
-	          <button type="submit" className="btn btn-primary" onClick={this.add}>Add</button>
+	          <button className="btn btn-primary" onClick={this.add}>Add</button>
           </div>
         </form>
         <p></p>
@@ -117,7 +117,7 @@ module.exports = React.createClass({
         event.free,
         event.normal || 0,
         event.reduced || 0,
-        event.revenue || 0,
+        (event.normal*lib.data.price + event.reduced*lib.data.reduced).toFixed(2),
         {
           val: (
             <div className="btn-toolbar">

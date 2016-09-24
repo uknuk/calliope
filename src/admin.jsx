@@ -31,7 +31,7 @@ module.exports = React.createClass({
 	          <label htmlFor="password">Password:&nbsp;</label>
             <input type="password" className="form-control" ref="password" required/>
 	          &nbsp;
-	          <button type="submit" className="btn btn-primary" onClick={this.auth}>Submit</button>
+	          <button className="btn btn-primary" onClick={this.auth}>Submit</button>
           </div>
         </form>
       </div>
@@ -39,6 +39,7 @@ module.exports = React.createClass({
   },
 
   auth: function(e) {
+    e.preventDefault();
     lib.save("/login", 'post', {
       username: 'admin',
       password: this.refs.password.value

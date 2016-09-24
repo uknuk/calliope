@@ -21,6 +21,7 @@ module.exports = React.createClass({
       alerts: {},
       id: this.props.routeParams.id,
       bookings: [],
+      print: false
     }
   },
 
@@ -29,15 +30,23 @@ module.exports = React.createClass({
       this.context.router.push('/ui/admin/events');
       return;
     }
-    
+
+    window.matchMedia('print').addListener(_.bind(function(mql) {
+      this.setState({print: mql.matches});
+    }, this));
+
     this.fetch();
   },
 
   render: function() {
-    var date = lib.data.events ?
-               lib.showDate(new Date(lib.data.events[this.state.id].time)) : '',
-        headers =
-    ["Name", "Email", "Phone", "Normal", "Reduced", "Payment", "Message", "Booked", ''];
+    var headers = ["Name", "Email", "Phone", "Normal", "Reduced", "Payment"]
+        date = lib.data.events ?
+               lib.showDate(new Date(lib.data.events[this.state.id].time)) : '';
+
+    if (this.state.print)
+      headers.push("Booked")
+    else
+      headers = headers.concat(["Message", "Booked", '']);
 
     if (this.state.loading)
       return (<div> Loading ... </div>);
@@ -54,19 +63,26 @@ module.exports = React.createClass({
 
   getRows: function() {
     return _.map(this.state.bookings, _.bind(function(entry) {
-      return [
+      var row = [
         entry.name,
         entry.email,
         entry.phone,
         entry.normal,
         entry.reduced,
-        entry.normal*lib.data.price + entry.reduced*lib.data.reduced + "€",
-        {
+        (entry.normal*lib.data.price + entry.reduced*lib.data.reduced).toFixed(2),
+      ];
+
+      if (!this.state.print) {
+        row.push({
           val: _.isEmpty(entry.message) ? null :
           (<Popover placement="left">{entry.message}</Popover>)
-        },
-        lib.showDate(new Date(entry.created_at)),
-        {
+        });
+      }
+
+      row.push(lib.showDate(new Date(entry.created_at)));
+
+      if (!this.state.print) {
+        row.push({
           val: (
             <div className="btn-toolbar">
               <button type="button" className="btn btn-xs btn-success" data-toggle="modal"
@@ -79,8 +95,10 @@ module.exports = React.createClass({
             </button>
             </div>
           )
-        }
-      ];
+        });
+      }
+
+      return row;
     }, this));
   },
 
