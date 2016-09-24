@@ -39,7 +39,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var headers = ["Name", "Email", "Phone", "Normal", "Reduced", "Payment"]
+    var headers = ["Name", "Email", "Phone", "Normal", "Reduced", "Group", "Payment"]
         date = lib.data.events ?
                lib.showDate(new Date(lib.data.events[this.state.id].time)) : '';
 
@@ -62,35 +62,36 @@ module.exports = React.createClass({
   },
 
   getRows: function() {
-    return _.map(this.state.bookings, _.bind(function(entry) {
+    return _.map(this.state.bookings, _.bind(function(b) {
       var row = [
-        entry.name,
-        entry.email,
-        entry.phone,
-        entry.normal,
-        entry.reduced,
-        (entry.normal*lib.data.price + entry.reduced*lib.data.reduced).toFixed(2),
+        b.name,
+        b.email,
+        b.phone,
+        b.normal,
+        b.reduced,
+        b.troop,
+        (b.normal*lib.data.price + (b.reduced + b.troop)*lib.data.reduced).toFixed(2),
       ];
 
       if (!this.state.print) {
         row.push({
-          val: _.isEmpty(entry.message) ? null :
-          (<Popover placement="left">{entry.message}</Popover>)
+          val: _.isEmpty(b.message) ? null :
+          (<Popover placement="left">{b.message}</Popover>)
         });
       }
 
-      row.push(lib.showDate(new Date(entry.created_at)));
+      row.push(lib.showDate(new Date(b.created_at)));
 
       if (!this.state.print) {
         row.push({
           val: (
             <div className="btn-toolbar">
               <button type="button" className="btn btn-xs btn-success" data-toggle="modal"
-                      data-target="#booker" data-event={this.state.id} data-booking={entry.id}
+                      data-target="#booker" data-event={this.state.id} data-booking={b.id}
               >
                 <span className="glyphicon glyphicon-edit"></span>
               </button>
-            <button type="button" className="btn btn-xs btn-danger" onClick={this.delete.bind(null, entry.id)}>
+            <button type="button" className="btn btn-xs btn-danger" onClick={this.delete.bind(null, b.id)}>
               <span className="glyphicon glyphicon-trash"></span>
             </button>
             </div>

@@ -1,4 +1,4 @@
-exports.se = {
+exports.sv = {
   name: 'Namn',
   email: 'E-post',
   phone: 'Telefon',
@@ -8,7 +8,7 @@ exports.se = {
   save: "Spara",
   noplaces: "Inga platser reserverade!",
   over: "Beställningen överskrider återstående platser",
-  group: "Grupp (min 10) ",
+  troop: "Grupp (min 10) ",
   mingroup: "Grupp måste ha mera än 9 platser",
   reserved: "Beställningen mottagen",
   free: "Ledig",

@@ -1,7 +1,6 @@
 var React = require('react'),
     Link = require('react-router').Link,
     lib = require('./lib.jsx'),
-    T = require('./translate.js'),
     Table = require('./table.jsx'),
     Alerts = require('./alerts.jsx'),
     Booker = require('./booker.jsx');
@@ -43,7 +42,7 @@ module.exports = React.createClass({
   renderUser: function() {
     return (
       <div className="col-sm-4">
-        <h4>{T.se.performances}</h4>
+        <h4>{lib.tr("performances")}</h4>
         <Table body={this.getRows()} style="table-borderless"/>
         <Booker onClose={this.close}/>
       </div>
@@ -68,7 +67,7 @@ module.exports = React.createClass({
         <p></p>
         <h4>Events: </h4>
         { _.isEmpty(this.state.events) ? null :
-          <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Revenue', '']}
+          <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Group', 'Revenue', '']}
                  body={this.getAdminRows()}
           />
         }
@@ -82,15 +81,15 @@ module.exports = React.createClass({
 
       if (event.free > 10) {
         mode = "success";
-        txt = T.se.free;
+        txt = lib.tr("free");
       }
       else if (event.free > 0) {
         mode = "warning";
-        txt = event.free + T.se.remains;
+        txt = event.free + lib.tr("remains");
       }
       else {
         mode = "danger";
-        txt = T.se.soldout;
+        txt = lib.tr("soldout");
       }
 
       return [
@@ -111,20 +110,21 @@ module.exports = React.createClass({
 
 
   getAdminRows: function() {
-    return _.map(this.state.events, _.bind(function(event) {
+    return _.map(this.state.events, _.bind(function(ev) {
       return [
-        lib.showDate(new Date(event.time)),
-        event.free,
-        event.normal || 0,
-        event.reduced || 0,
-        (event.normal*lib.data.price + event.reduced*lib.data.reduced).toFixed(2),
+        lib.showDate(new Date(ev.time)),
+        ev.free,
+        ev.normal || 0,
+        ev.reduced || 0,
+        ev.troop || 0,
+        (ev.normal*lib.data.price + (ev.reduced + ev.troop)*lib.data.reduced).toFixed(2),
         {
           val: (
             <div className="btn-toolbar">
-              <Link className="btn btn-xs btn-info" to={"/ui/admin/events/" + event.id} title="View detail">
+              <Link className="btn btn-xs btn-info" to={"/ui/admin/events/" + ev.id} title="View detail">
                 <span className="glyphicon glyphicon-zoom-in"></span>
               </Link>
-              <button type="button" className="btn btn-xs btn-danger" onClick={this.disable.bind(null,event.id)}>
+              <button type="button" className="btn btn-xs btn-danger" onClick={this.disable.bind(null, ev.id)}>
                 <span className="glyphicon glyphicon-trash"></span>
               </button>
             </div>
@@ -138,9 +138,9 @@ module.exports = React.createClass({
     lib.get("/events?details=" + this.state.admin, this);
   },
 
-  add: function(e) {
+  add: function() {
     lib.save("/events", "post", {
-      time: this.refs.date.value + 'T' + this.refs.time.value
+      time: lib.setDate(this.refs.date.value + ' ' + this.refs.time.value)
     }, this);
   },
 

@@ -1,5 +1,16 @@
 var $ = require('jquery'),
+    moment = require('moment-timezone'),
+    translate = require('./translate.js'),
     lib = exports;
+
+lib.conf = {
+  timezone: "Europe/Helsinki",
+  locale: "sv"
+}
+
+require("moment/locale/sv");
+// browserify needs to know locale
+moment.locale(this.conf.locale);
 
 lib.data = {}
 
@@ -54,10 +65,14 @@ lib.save = function(url, method, data, caller) {
 };
 
 lib.showDate = function(date) {
-  var mins = date.getMinutes().toString();
-  if (mins.length == 1)
-    mins = '0' + mins;
-  
-  return date.getDate() + '.' + (date.getMonth() + 1) + ' ' + date.getHours() + ':' + mins;
+  return moment(date).format("LLL");
 };
+
+lib.setDate = function(date) {
+  return moment.tz(date, this.conf.timezone).format()
+};
+
+lib.tr = function(phrase) {
+  return translate[lib.conf.locale][phrase];
+}
 

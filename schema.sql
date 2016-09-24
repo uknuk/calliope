@@ -18,6 +18,7 @@ time        timestamptz,
 free        smallint,
 normal      smallint default 0,
 reduced     smallint default 0,
+troop       smallint default 0,
 active      boolean
 );
 
@@ -29,6 +30,7 @@ email    varchar(40),
 phone    varchar(20),
 normal   smallint,
 reduced  smallint,
+troop    smallint,
 message  text,
 created_at timestamptz,
 updated_at timestamptz

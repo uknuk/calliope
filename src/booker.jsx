@@ -3,7 +3,6 @@ var React = require('react'),
     Link = require('react-router').Link,
     $ = require('jquery'),
     lib = require('./lib.jsx'),
-    T = require('./translate.js'),
     Alerts = require('./alerts.jsx');
 
 module.exports = React.createClass({
@@ -53,7 +52,7 @@ module.exports = React.createClass({
                    {this.input('email', 'email')}
                    {this.input('phone', 'tel')}
                    <div className="form-group">
-                     <label className="control-label col-sm-2" forHtml="msg">{T.se.msg}</label>
+                     <label className="control-label col-sm-2" forHtml="msg">{lib.tr("msg")}</label>
                      <div className="col-sm-6">
                        <textarea rows='5' cols='60' id="msg" ref="message"
                                  defaultValue={this.state.booking.message}
@@ -62,18 +61,18 @@ module.exports = React.createClass({
                    </div>
                    <legend><h4>Platser</h4></legend>
                    {this.number('normal', "Normal " + lib.data.price, 1)}
-                   {this.number('reduced', T.se.reduced + lib.data.reduced, 1)}
-                   {this.number('group', T.se.group + lib.data.reduced, 10)}
+                   {this.number('reduced', lib.tr("reduced") + lib.data.reduced, 1)}
+                   {this.number('troop', lib.tr("troop") + lib.data.group, 10)}
                  </form>
                </div>
 
                <div className="modal-footer">
                  <button type="button" className="btn btn-default" data-dismiss="modal">
-                   {this.state.saved ? T.se.close : T.se.cancel}
+                   {lib.tr(this.state.saved ? "close" : "cancel")}
                  </button>
                  <button type="button" className="btn btn-primary" onClick={this.save}
                          disabled={this.state.saved}>
-                   {T.se.save}
+                   {lib.tr("save")}
                  </button>
                </div>
              </div>
@@ -88,7 +87,7 @@ module.exports = React.createClass({
     var val = this.state.booking ? this.state.booking[name] : '';
     return (
       <div className="form-group required">
-        <label forHtml={name} className="control-label col-sm-2">{T.se[name] + ':'}</label>
+        <label forHtml={name} className="control-label col-sm-2">{lib.tr(name) + ':'}</label>
         <div className="col-sm-6">
           <input type={type} className="form-control" id={name} ref={name} name={name}
                  defaultValue={val}
@@ -119,7 +118,7 @@ module.exports = React.createClass({
         isNew = _.isEmpty(booking),
         data = {
           event_id: this.state.eventId,
-          created_at: new Date().toISOString()
+          created_at: lib.setDate(new Date())
         };
 
     _.each(['name','email','phone'], _.bind(function(field) {
@@ -139,27 +138,24 @@ module.exports = React.createClass({
 
     data.message = this.refs.message.value;
 
-    _.each(['normal', 'reduced', 'group'],  _.bind(function(field) {
+    _.each(['normal', 'reduced', 'troop'],  _.bind(function(field) {
       data[field] = parseInt(this.refs[field].value || 0);
     }, this));
 
-    if (data.group > 0 && data.group < 10) {
-      this.setAlert('warning', T.se.mingroup);
+    if (data.troop > 0 && data.troop < 10) {
+      this.setAlert('warning', lib.tr("mingroup"));
       return;
     }
 
-    data.reduced += data.group;
-    delete data.group;
-
-    total = data.normal + data.reduced;
+    total = data.normal + data.reduced + data.troop;
 
     if (!isNew)
       free += booking.normal + booking.reduced;
 
     if (total == 0)
-      this.setAlert('warning', T.se.noplaces);
+      this.setAlert('warning', lib.tr("noplaces"));
     else if (total > free)
-      this.setAlert('warning', T.se.over);
+      this.setAlert('warning', lib.tr("over"));
     else {
       if (isNew)
         lib.save("/bookings", 'post', data, this);
@@ -170,7 +166,7 @@ module.exports = React.createClass({
 
   onSaved: function() {
     this.setState({saved: true});
-    this.setAlert("success", T.se.reserved);
+    this.setAlert("success", lib.tr("reserved"));
   }
 
 });
