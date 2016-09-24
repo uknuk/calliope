@@ -62,7 +62,7 @@ module.exports = React.createClass({
                    <legend><h4>Platser</h4></legend>
                    {this.number('normal', "Normal " + lib.data.price, 1)}
                    {this.number('reduced', lib.tr("reduced") + lib.data.reduced, 1)}
-                   {this.number('troop', lib.tr("troop") + lib.data.group, 10)}
+                   {this.number('troop', lib.tr("troop") + lib.data.reduced, 10)}
                  </form>
                </div>
 
