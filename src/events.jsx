@@ -32,7 +32,7 @@ module.exports = React.createClass({
     return (
       <div className="container-fluid">
         { this.renderAlerts() }
-        <h2><i>{this.state.name}</i></h2>
+        <h2><strong>{this.state.name.toUpperCase()}</strong></h2>
         <p></p>
         {this.state.admin? this.renderAdmin() : this.renderUser()}
       </div>
@@ -70,7 +70,7 @@ module.exports = React.createClass({
           <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Group', 'Revenue', '']}
                  body={this.getAdminRows()}
           />
-        }
+          }
       </div>
     );
   },
@@ -99,7 +99,7 @@ module.exports = React.createClass({
                     data-target="#booker" data-event={event.id} >
               {lib.showDate(new Date(event.time))}
             </button>
-          ),
+          )
         },
         {
           val: (<span className="large-text">{txt}</span>)

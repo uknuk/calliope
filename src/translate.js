@@ -3,17 +3,18 @@ exports.sv = {
   email: 'E-post',
   phone: 'Telefon',
   reduced: "Rabatt (studerande, pensionär) ",
-  close: "Stänga",
+  close: "Stäng",
   cancel: "Avbryt",
   save: "Spara",
   noplaces: "Inga platser reserverade!",
   over: "Beställningen överskrider återstående platser",
-  troop: "Grupp (min 10) ",
+  troop: "Grupp (minst 10) ",
   mingroup: "Grupp måste ha mera än 9 platser",
-  reserved: "Beställningen mottagen",
+  reserved: "Tack! Vi har nu registrerat din bokning",
   free: "Ledig",
   soldout: "Slutsåld",
   remains: " platser kvar",
   performances: "Föreställningar:",
-  msg: "Meddelande:"
-}
+  msg: "Meddelande: ",
+  info: "(Vill du till exempel utnyttja något av våra mat+teater-erbjudanden i samband med föreställningen"
+};
