@@ -2,7 +2,7 @@ var React = require('react'),
     ReactDOM = require('react-dom'),
     Link = require('react-router').Link,
     $ = require('jquery'),
-    lib = require('./lib.jsx'),
+    lib = require('./lib.js'),
     Alerts = require('./alerts.jsx');
 
 module.exports = React.createClass({

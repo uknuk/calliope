@@ -12,7 +12,7 @@ require("moment/locale/sv");
 // browserify needs to know locale
 moment.locale(this.conf.locale);
 
-lib.data = {}
+lib.data = {};
 
 lib.request = function(config) {
   if (!config.method)
@@ -22,9 +22,11 @@ lib.request = function(config) {
     config.dataType = 'json';
   }
 
-  config.url = '/api' + config.url
-  config.beforeSend = function(jqxhr, config) {jqxhr.requestURL = config.url};
-  return $.ajax(config).promise()
+  config.url = '/api' + config.url;
+  config.beforeSend = function(jqxhr, config) {
+    jqxhr.requestURL = config.url;
+  };
+  return $.ajax(config).promise();
 };
 
 lib.get = function(url, caller) {
@@ -34,14 +36,14 @@ lib.get = function(url, caller) {
         if (resp.result == 'fail')
           caller.setError(resp.msg);
         else
-          caller.getData(resp)
+          caller.getData(resp);
       })
       .fail(function(error) {
         caller.handleError(error);
       })
       .always(function() {
-        caller.setState({loading: false})
-      })
+        caller.setState({loading: false});
+      });
 };
 
 lib.save = function(url, method, data, caller) {
@@ -54,25 +56,26 @@ lib.save = function(url, method, data, caller) {
       .done(function(resp) {
         if (resp.result == 'ok') {
           if (!caller.state.saved)
-	          caller.onSaved(resp);
-	      }
+            caller.onSaved(resp);
+        }
         else
           caller.setError(resp.msg);
       })
       .fail(function(error) {
         caller.handleError(error);
-      })
+      });
 };
 
 lib.showDate = function(date) {
-  return moment(date).format("LLL");
+  var ar = moment(date).format("LLL").split(" ");
+  ar.splice(2,1);
+  return ar.join(" ");
 };
 
 lib.setDate = function(date) {
-  return moment.tz(date, this.conf.timezone).format()
+  return moment.tz(date, this.conf.timezone).format();
 };
 
 lib.tr = function(phrase) {
   return translate[lib.conf.locale][phrase];
-}
-
+};

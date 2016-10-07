@@ -1,7 +1,7 @@
 var React = require('react'),
     ReactDOM = require('react-dom'),
     Link = require('react-router').Link,
-    lib = require('./lib.jsx'),
+    lib = require('./lib.js'),
     Alerts = require('./alerts.jsx'),
     Booker = require('./booker.jsx'),
     Table = require('./table.jsx'),
@@ -22,7 +22,7 @@ module.exports = React.createClass({
       id: this.props.routeParams.id,
       bookings: [],
       print: false
-    }
+    };
   },
 
   componentWillMount: function() {
@@ -39,12 +39,12 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var headers = ["Name", "Email", "Phone", "Normal", "Reduced", "Group", "Payment"]
+    var headers = ["Name", "Email", "Phone", "Normal", "Reduced", "Group", "Payment"],
         date = lib.data.events ?
                lib.showDate(new Date(lib.data.events[this.state.id].time)) : '';
 
     if (this.state.print)
-      headers.push("Booked")
+      headers.push("Booked");
     else
       headers = headers.concat(["Message", "Booked", '']);
 
@@ -52,11 +52,11 @@ module.exports = React.createClass({
       return (<div> Loading ... </div>);
     return (
       <div className="container-fluid">
-      { this.renderAlerts() }
-      <h4>{"Bookings for " + date}</h4>
-      <Table head={headers} body={this.getRows()} search />
-      <Booker onClose={this.close}/>
-      <Link className="btn btn-default" to="/ui/admin/events">Back</Link>
+        { this.renderAlerts() }
+        <h4>{"Bookings for " + date}</h4>
+        <Table head={headers} body={this.getRows()} search />
+        <Booker onClose={this.close}/>
+        <Link className="btn btn-default" to="/ui/admin/events">Back</Link>
       </div>
     );
   },
@@ -117,11 +117,11 @@ module.exports = React.createClass({
   },
 
   fetch: function() {
-    lib.get("/events/" + this.state.id, this)
+    lib.get("/events/" + this.state.id, this);
   },
 
   getData: function(resp) {
     lib.data.bookings = _.keyBy(resp, "id");
-    this.setState({bookings: resp})
+    this.setState({bookings: resp});
   }
 });

@@ -1,6 +1,6 @@
 var React = require('react'),
     Link = require('react-router').Link,
-    lib = require('./lib.jsx'),
+    lib = require('./lib.js'),
     Table = require('./table.jsx'),
     Alerts = require('./alerts.jsx'),
     Booker = require('./booker.jsx');
@@ -19,7 +19,7 @@ module.exports = React.createClass({
       alerts: {},
       events: [],
       name: null
-    }
+    };
   },
 
   componentWillMount: function() {
@@ -36,7 +36,7 @@ module.exports = React.createClass({
         <p></p>
         {this.state.admin? this.renderAdmin() : this.renderUser()}
       </div>
-    )
+    );
   },
 
   renderUser: function() {
@@ -55,13 +55,13 @@ module.exports = React.createClass({
         <h4>New event </h4>
         <form className="form-inline">
           <div className="form-group">
-	          <label htmlFor="date">Date:&nbsp;</label>
+            <label htmlFor="date">Date:&nbsp;</label>
             <input type="date" className="form-control" ref="date" required/>
-	          &nbsp;
+            &nbsp;
             <label htmlFor="time">Time:&nbsp;</label>
             <input type="time" className="form-control" ref="time" required/>
             &nbsp;
-	          <button className="btn btn-primary" onClick={this.add}>Add</button>
+            <button className="btn btn-primary" onClick={this.add}>Add</button>
           </div>
         </form>
         <p></p>
@@ -96,9 +96,9 @@ module.exports = React.createClass({
         {
           val: (
             <button className={"btn btn-lg btn-" + mode} data-toggle="modal"
-            data-target="#booker" data-event={event.id} >
-            {lib.showDate(new Date(event.time))}
-          </button>
+                    data-target="#booker" data-event={event.id} >
+              {lib.showDate(new Date(event.time))}
+            </button>
           ),
         },
         {
@@ -153,7 +153,7 @@ module.exports = React.createClass({
   },
 
   getData: function(resp) {
-    lib.data.price = resp.play.price
+    lib.data.price = resp.play.price;
     lib.data.reduced = (resp.play.price*(1 - resp.play.discount)).toFixed(2);
     lib.data.events = _.keyBy(resp.events, "id");
 

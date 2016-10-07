@@ -2,7 +2,7 @@ var React = require('react'),
     ReactDOM = require('react-dom'),
     Link = require('react-router').Link,
     _ = require('lodash'),
-    lib = require('./lib.jsx'),
+    lib = require('./lib.js'),
     Alerts = require('./alerts.jsx');
 
 module.exports = React.createClass({
@@ -28,10 +28,10 @@ module.exports = React.createClass({
         { this.renderAlerts() }
         <form className="form-inline">
           <div className="form-group">
-	          <label htmlFor="password">Password:&nbsp;</label>
+            <label htmlFor="password">Password:&nbsp;</label>
             <input type="password" className="form-control" ref="password" required/>
-	          &nbsp;
-	          <button className="btn btn-primary" onClick={this.auth}>Submit</button>
+            &nbsp;
+            <button className="btn btn-primary" onClick={this.auth}>Submit</button>
           </div>
         </form>
       </div>

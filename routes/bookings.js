@@ -19,7 +19,7 @@ router.post('/', function(req, res) {
         return trx.raw(
           `insert into bookings (${_.keys(req.body).join()}) values (?,?,?,?,?,?,?,?,?)`,
           _.values(par)
-        )
+        );
       })
       .then(function() {
         ev.normal += par.normal;
@@ -30,7 +30,7 @@ router.post('/', function(req, res) {
           "update events set free=?, normal=?, reduced=?, troop=? where id=?",
           [ev.free, ev.normal, ev.reduced, ev.troop, par.event_id]
         );
-      })
+      });
   })
     .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
@@ -52,7 +52,7 @@ router.put('/:id', function(req, res) {
         return trx.raw(
           "update bookings set name=?, email=?, phone=?, normal=?, reduced=?, troop=?, message=? where id=?",
           [par.name, par.email, par.phone, par.normal, par.reduced, par.troop, par.message, req.params.id]
-        )
+        );
       })
       .then(function() {
         var ndiff = par.normal - d.bnormal,
@@ -68,7 +68,7 @@ router.put('/:id', function(req, res) {
           "update events set free=?, normal=?, reduced=?, troop=?  where id=?",
           [d.free, d.enormal, d.ereduced, d.etroop, par.event_id]
          );
-      })
+      });
   })
     .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
@@ -92,13 +92,13 @@ router.delete('/:id', function(req, res) {
       .then(function() {
         d.enormal -= d.bnormal;
         d.ereduced -= d.breduced;
-        d.etroop -= d.btroop
+        d.etroop -= d.btroop;
         d.free +=  d.bnormal + d.breduced + d.btroop;
         return trx.raw(
           "update events set free=?, normal=?, reduced=?, troop=? where id=?",
           [d.free, d.enormal, d.ereduced, d.etroop, d.event_id]
         );
-      })
+      });
   })
     .then(() => res.json({result: 'ok'}))
     .catch( err => db.error(err, res));
