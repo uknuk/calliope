@@ -2,6 +2,7 @@ var router = require('express').Router(),
     _ = require('lodash'),
     db = require('./db');
 
+const fields = ["normal", "reduced", "troop", "service"];
 
 router.post('/', function(req, res) {
   var ev,
@@ -9,27 +10,23 @@ router.post('/', function(req, res) {
 
   db.pg.transaction(function(trx) {
     return trx.raw(
-      "select free, normal, reduced, price, troop, discount from events \
-       join plays on events.play_id = plays.id where events.id = ?",
+      "select free, normal, reduced, troop, service from events \
+       where events.id = ?",
       [par.event_id]
     )
       .then(function(r) {
+        var qm = _.fill(Array(_.size(par)), '?').join(',');
+
         ev = r.rows[0];
-        console.log(_.values(par));
         return trx.raw(
-          `insert into bookings (${_.keys(req.body).join()}) values (?,?,?,?,?,?,?,?,?)`,
+          `insert into bookings (${_.keys(req.body).join()}) values (${qm})`,
           _.values(par)
         );
       })
       .then(function() {
-        ev.normal += par.normal;
-        ev.reduced += par.reduced;
-        ev.troop += par.troop;
+        _.each(fields, (f) => ev[f] += par[f]);
         ev.free -= par.normal + par.reduced + par.troop;
-        return trx.raw(
-          "update events set free=?, normal=?, reduced=?, troop=? where id=?",
-          [ev.free, ev.normal, ev.reduced, ev.troop, par.event_id]
-        );
+        return db.update(trx, 'events', ev, par.event_id);
       });
   })
     .then(() => res.json({result: 'ok'}))
@@ -37,37 +34,33 @@ router.post('/', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
-  var d,
+  var cur, // current values
       par = req.body;
 
   db.pg.transaction(function(trx) {
     return trx.raw(
-      "select b.normal as bnormal, b.reduced as breduced, b.troop as btroop, free, price, \
-       e.normal as enormal, e.reduced as ereduced, e.troop as etroop, discount from bookings b \
-       join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=?",
+      `select ${db.aliases(fields, 'b')}, free, ${db.aliases(fields, 'e')} \
+       from bookings b join events e on b.event_id = e.id where b.id=?`,
       [req.params.id]
     )
       .then(function(r) {
-        d = r.rows[0];
-        return trx.raw(
-          "update bookings set name=?, email=?, phone=?, normal=?, reduced=?, troop=?, message=? where id=?",
-          [par.name, par.email, par.phone, par.normal, par.reduced, par.troop, par.message, req.params.id]
-        );
+        console.log(r.rows[0]);
+        cur = r.rows[0];
+        return db.update(trx, 'bookings', par, req.params.id);
       })
       .then(function() {
-        var ndiff = par.normal - d.bnormal,
-            rdiff = par.reduced - d.breduced,
-            gdiff = par.troop - d.btroop;
-
-        d.enormal += ndiff;
-        d.ereduced += rdiff;
-        d.etroop += gdiff;
-        d.free -= ndiff + rdiff + gdiff;
-        console.log(d);
-        return trx.raw(
-          "update events set free=?, normal=?, reduced=?, troop=?  where id=?",
-          [d.free, d.enormal, d.ereduced, d.etroop, par.event_id]
-         );
+        var diff = {},
+            res = {};
+        console.log(cur);
+        _.each(fields, function(f) {
+          console.log(par[f]);
+          diff[f] = par[f] - cur[`b_${f}`];
+          res[f] = cur[`e_${f}`] + diff[f];
+        });
+        console.log(diff);
+        res.free = cur.free - (diff.normal + diff.reduced + diff.troop);
+        console.log(res);
+        return db.update(trx, "events", res, par.event_id);
       });
   })
     .then(() => res.json({result: 'ok'}))
@@ -81,7 +74,7 @@ router.delete('/:id', function(req, res) {
   db.pg.transaction(function(trx) {
     return trx.raw(
        "select b.normal as bnormal, b.reduced as breduced, b.troop as btroop, event_id, free, \
-       e.normal as enormal, e.reduced as ereduced, e.troop as etroop, price, discount from bookings b \
+       e.normal as enormal, e.reduced as ereduced, e.troop as etroop from bookings b \
        join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=?",
       [req.params.id]
     )

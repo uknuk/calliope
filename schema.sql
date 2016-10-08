@@ -19,6 +19,7 @@ free        smallint,
 normal      smallint default 0,
 reduced     smallint default 0,
 troop       smallint default 0,
+service     smallint default 0,
 active      boolean
 );
 
@@ -31,13 +32,7 @@ phone    varchar(20),
 normal   smallint,
 reduced  smallint,
 troop    smallint,
-message  text,
+service  smallint,
 created_at timestamptz,
 updated_at timestamptz
 );
-
-
-
-
-
-

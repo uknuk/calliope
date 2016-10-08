@@ -51,18 +51,20 @@ module.exports = React.createClass({
                    {this.input('name', 'text')}
                    {this.input('email', 'email')}
                    {this.input('phone', 'tel')}
-                   <div className="form-group">
-                     <label className="control-label col-sm-2" forHtml="msg">{lib.tr("msg")}</label>
-                     <div className="col-sm-6">
-                       <textarea rows='5' cols='60' id="msg" ref="message"
-                                 defaultValue={this.state.booking.message}
-                       />
-                     </div>
+                   {/* <div className="form-group">
+                   <label className="control-label col-sm-2" forHtml="msg">{lib.tr("msg")}</label>
+                   <div className="col-sm-6">
+                   <textarea rows='5' cols='60' id="msg" ref="message"
+                   defaultValue={this.state.booking.message}
+                   />
                    </div>
-                   <legend><h4>Platser</h4></legend>
+                   </div> */}
+                   <legend><h4>{lib.tr("places")}</h4></legend>
                    {this.number('normal', "Normal " + lib.data.price, 1)}
                    {this.number('reduced', lib.tr("reduced") + lib.data.reduced, 1)}
                    {this.number('troop', lib.tr("troop") + lib.data.reduced, 10)}
+                   <legend><h4>{lib.tr("service")}</h4></legend>
+                   {this.number('service', lib.tr("participate"), 1)}
                  </form>
                </div>
 
@@ -136,9 +138,8 @@ module.exports = React.createClass({
     if (!pass)
       return;
 
-    data.message = this.refs.message.value;
 
-    _.each(['normal', 'reduced', 'troop'],  _.bind(function(field) {
+    _.each(['normal', 'reduced', 'troop', 'service'],  _.bind(function(field) {
       data[field] = parseInt(this.refs[field].value || 0);
     }, this));
 

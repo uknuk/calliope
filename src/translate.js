@@ -16,5 +16,8 @@ exports.sv = {
   remains: " platser kvar",
   performances: "Föreställningar:",
   msg: "Meddelande: ",
-  info: "(Vill du till exempel utnyttja något av våra mat+teater-erbjudanden i samband med föreställningen"
+  service: "Mat+teater-erbjudande",
+  participate: "Deltar",
+  info: "Missa inte vårt mat erbjudande som är enastående gourmet upplevelse",
+  places: "Platser"
 };
