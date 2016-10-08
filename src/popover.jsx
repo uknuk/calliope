@@ -6,6 +6,7 @@ var React = require('react'),
 module.exports = React.createClass({
   propTypes: {
     placement: React.PropTypes.string,
+    glyph: React.PropTypes.string,
     children: React.PropTypes.string
   },
   componentDidMount: function () {
@@ -16,7 +17,7 @@ module.exports = React.createClass({
   },
   render : function() {
     return (
-      <span className="glyphicon glyphicon-zoom-in"
+      <span className={"glyphicon glyphicon-" + this.props.glyph}
             data-toggle="popover" data-trigger="hover focus"
             data-placement={this.props.placement} data-html="true"
             data-container="body"

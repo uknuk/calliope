@@ -39,14 +39,12 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var headers = ["Name", "Email", "Phone", "Normal", "Reduced", "Group", "Payment"],
+    var headers = [
+      "Name", "Email", "Phone", "Normal", "Reduced", "Group",
+      "Payment", "Service", "Booked", ''
+    ],
         date = lib.data.events ?
                lib.showDate(new Date(lib.data.events[this.state.id].time)) : '';
-
-    if (this.state.print)
-      headers.push("Booked");
-    else
-      headers = headers.concat(["Message", "Booked", '']);
 
     if (this.state.loading)
       return (<div> Loading ... </div>);
@@ -71,16 +69,9 @@ module.exports = React.createClass({
         b.reduced,
         b.troop,
         (b.normal*lib.data.price + (b.reduced + b.troop)*lib.data.reduced).toFixed(2),
+        b.service,
+        lib.showDate(new Date(b.created_at))
       ];
-
-      if (!this.state.print) {
-        row.push({
-          val: _.isEmpty(b.message) ? null :
-          (<Popover placement="left">{b.message}</Popover>)
-        });
-      }
-
-      row.push(lib.showDate(new Date(b.created_at)));
 
       if (!this.state.print) {
         row.push({

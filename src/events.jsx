@@ -42,7 +42,7 @@ module.exports = React.createClass({
   renderUser: function() {
     return (
       <div className="col-sm-4">
-        <h4>{lib.tr("performances")}</h4>
+        <h3>{lib.tr("performances")}</h3>
         <Table body={this.getRows()} style="table-borderless"/>
         <Booker onClose={this.close}/>
       </div>
@@ -67,7 +67,8 @@ module.exports = React.createClass({
         <p></p>
         <h4>Events: </h4>
         { _.isEmpty(this.state.events) ? null :
-          <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Group', 'Revenue', '']}
+          <Table head={['Time', 'Free', 'Normal', 'Reduced', 'Group',
+                        'Revenue', 'Service', '']}
                  body={this.getAdminRows()}
           />
           }
@@ -102,7 +103,7 @@ module.exports = React.createClass({
           )
         },
         {
-          val: (<span className="large-text">{txt}</span>)
+          val: (<span className={"event-info + text-" + mode}>{txt}</span>)
         }
       ];
     });
@@ -118,6 +119,7 @@ module.exports = React.createClass({
         ev.reduced || 0,
         ev.troop || 0,
         (ev.normal*lib.data.price + (ev.reduced + ev.troop)*lib.data.reduced).toFixed(2),
+        ev.service || 0,
         {
           val: (
             <div className="btn-toolbar">

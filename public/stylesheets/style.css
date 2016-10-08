@@ -12,12 +12,17 @@ a {
     border: none;
 }
 
-.large-text {
-    font-size: 20px;
+.event-info {
+  font-size: 24px;
+  white-space: nowrap;
 }
 
 
 .form-group.required .control-label:before {
     content:"*";
     color:red;
+}
+
+span.glyphicon-info-sign {
+  font-size: 75%;
 }

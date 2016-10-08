@@ -1,6 +1,13 @@
 var router = require('express').Router(),
     _ = require('lodash'),
-    db = require('./db');
+    db = require('./db'),
+    query = function(trx, id, ev='') {
+      return trx.raw(
+      `select ${db.aliases(fields, 'b')}, free, ${db.aliases(fields, 'e')} \
+       ${ev} from bookings b join events e on b.event_id = e.id where b.id=?`,
+      [id]
+      );
+    };
 
 const fields = ["normal", "reduced", "troop", "service"];
 
@@ -38,13 +45,8 @@ router.put('/:id', function(req, res) {
       par = req.body;
 
   db.pg.transaction(function(trx) {
-    return trx.raw(
-      `select ${db.aliases(fields, 'b')}, free, ${db.aliases(fields, 'e')} \
-       from bookings b join events e on b.event_id = e.id where b.id=?`,
-      [req.params.id]
-    )
+    return query(trx, req.params.id)
       .then(function(r) {
-        console.log(r.rows[0]);
         cur = r.rows[0];
         return db.update(trx, 'bookings', par, req.params.id);
       })
@@ -68,29 +70,20 @@ router.put('/:id', function(req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-  var d,
+  var cur,
       par = req.body;
 
   db.pg.transaction(function(trx) {
-    return trx.raw(
-       "select b.normal as bnormal, b.reduced as breduced, b.troop as btroop, event_id, free, \
-       e.normal as enormal, e.reduced as ereduced, e.troop as etroop from bookings b \
-       join events e on b.event_id = e.id join plays on e.play_id = plays.id where b.id=?",
-      [req.params.id]
-    )
+    return query(trx, req.params.id, ",event_id")
       .then(function(r) {
-        d = r.rows[0];
+        cur = r.rows[0];
         return trx.raw("delete from bookings where id = ?", [req.params.id]);
       })
       .then(function() {
-        d.enormal -= d.bnormal;
-        d.ereduced -= d.breduced;
-        d.etroop -= d.btroop;
-        d.free +=  d.bnormal + d.breduced + d.btroop;
-        return trx.raw(
-          "update events set free=?, normal=?, reduced=?, troop=? where id=?",
-          [d.free, d.enormal, d.ereduced, d.etroop, d.event_id]
-        );
+        var res = {};
+        _.each(fields, (f) => res[f] = cur[`e_${f}`] - cur[`b_${f}`]);
+        res.free =  cur.free + cur.b_normal + cur.b_reduced + cur.b_troop;
+        return db.update(trx, 'events', res, cur.event_id);
       });
   })
     .then(() => res.json({result: 'ok'}))

@@ -3,6 +3,7 @@ var React = require('react'),
     Link = require('react-router').Link,
     $ = require('jquery'),
     lib = require('./lib.js'),
+    Popover = require('./popover.jsx'),
     Alerts = require('./alerts.jsx');
 
 module.exports = React.createClass({
@@ -51,19 +52,17 @@ module.exports = React.createClass({
                    {this.input('name', 'text')}
                    {this.input('email', 'email')}
                    {this.input('phone', 'tel')}
-                   {/* <div className="form-group">
-                   <label className="control-label col-sm-2" forHtml="msg">{lib.tr("msg")}</label>
-                   <div className="col-sm-6">
-                   <textarea rows='5' cols='60' id="msg" ref="message"
-                   defaultValue={this.state.booking.message}
-                   />
-                   </div>
-                   </div> */}
                    <legend><h4>{lib.tr("places")}</h4></legend>
                    {this.number('normal', "Normal " + lib.data.price, 1)}
                    {this.number('reduced', lib.tr("reduced") + lib.data.reduced, 1)}
                    {this.number('troop', lib.tr("troop") + lib.data.reduced, 10)}
-                   <legend><h4>{lib.tr("service")}</h4></legend>
+                   <legend>
+                     <h4>
+                       {lib.tr("service")}
+                       <Popover placement="right" glyph="info-sign">{lib.tr("info")}</Popover>
+                     </h4>
+                   </legend>
+
                    {this.number('service', lib.tr("participate"), 1)}
                  </form>
                </div>
