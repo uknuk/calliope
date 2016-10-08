@@ -18,7 +18,7 @@ module.exports = React.createClass({
       loading: false,
       alerts: {},
       events: [],
-      name: null
+      name: ''
     };
   },
 

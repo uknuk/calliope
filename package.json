@@ -41,6 +41,6 @@
     "supervisor": "^0.10.0"
   },
   "engines": {
-    "node": "6.6.0"
+    "node": "5.10.1"
   }
 }

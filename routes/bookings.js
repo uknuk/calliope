@@ -1,7 +1,7 @@
 var router = require('express').Router(),
     _ = require('lodash'),
     db = require('./db'),
-    query = function(trx, id, ev='') {
+    query = function(trx, id, ev) {
       return trx.raw(
       `select ${db.aliases(fields, 'b')}, free, ${db.aliases(fields, 'e')} \
        ${ev} from bookings b join events e on b.event_id = e.id where b.id=?`,
@@ -45,7 +45,7 @@ router.put('/:id', function(req, res) {
       par = req.body;
 
   db.pg.transaction(function(trx) {
-    return query(trx, req.params.id)
+    return query(trx, req.params.id, '')
       .then(function(r) {
         cur = r.rows[0];
         return db.update(trx, 'bookings', par, req.params.id);
