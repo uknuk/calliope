@@ -59,7 +59,9 @@ module.exports = React.createClass({
                    <legend>
                      <h4>
                        {lib.tr("service")}
-                       <Popover placement="right" glyph="info-sign">{lib.tr("info")}</Popover>
+                       {<Popover placement="bottom" glyph="question-sign">{lib.tr("help")}</Popover>}
+                       &nbsp;
+                       <a href={lib.conf.url} target="_blank">{lib.tr("more")}</a>
                      </h4>
                    </legend>
 
@@ -136,7 +138,6 @@ module.exports = React.createClass({
 
     if (!pass)
       return;
-
 
     _.each(['normal', 'reduced', 'troop', 'service'],  _.bind(function(field) {
       data[field] = parseInt(this.refs[field].value || 0);

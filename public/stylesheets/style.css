@@ -5,8 +5,8 @@ body {
 
 a {
   color: #00B7FF;
+  font-size: 14px;
 }
-
 
 .table.table-borderless td, .table.table-borderless th {
     border: none;
@@ -16,7 +16,6 @@ a {
   font-size: 24px;
   white-space: nowrap;
 }
-
 
 .form-group.required .control-label:before {
     content:"*";

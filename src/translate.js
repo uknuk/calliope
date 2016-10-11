@@ -18,6 +18,7 @@ exports.sv = {
   msg: "Meddelande: ",
   service: "Mat+teater-erbjudande",
   participate: "Deltar",
-  info: "Missa inte vårt mat erbjudande som är enastående gourmet upplevelse",
+  help: "Ange hur många av er som deltar i vårt erbjudande om teater + mat",
+  more: "Läs mera",
   places: "Platser"
 };
