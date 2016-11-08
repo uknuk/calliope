@@ -6,8 +6,9 @@ var $ = require('jquery'),
 lib.conf = {
   timezone: "Europe/Helsinki",
   locale: "sv",
-  url: "https://oroligatimmen.com/2016/10/08/blog-post-title-2"
-}
+  url: "https://oroligatimmen.com/2016/10/08/blog-post-title-2",
+  full: [4]
+};
 
 require("moment/locale/sv");
 // browserify needs to know locale

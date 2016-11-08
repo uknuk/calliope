@@ -56,16 +56,21 @@ module.exports = React.createClass({
                    {this.number('normal', "Normal " + lib.data.price, 1)}
                    {this.number('reduced', lib.tr("reduced") + lib.data.reduced, 1)}
                    {this.number('troop', lib.tr("troop") + lib.data.reduced, 10)}
-                   <legend>
-                     <h4>
-                       {lib.tr("service")}
-                       {<Popover placement="bottom" glyph="question-sign">{lib.tr("help")}</Popover>}
-                       &nbsp;
-                       <a href={lib.conf.url} target="_blank">{lib.tr("more")}</a>
-                     </h4>
-                   </legend>
+                   {_.includes(lib.conf.full, this.state.eventId) ? null : (
+                      <div>
+                        <legend>
+                          <h4>
+                            {lib.tr("service")}
+                            {<Popover placement="bottom" glyph="question-sign">{lib.tr("help")}</Popover>}
+                            &nbsp;
+                            <a href={lib.conf.url} target="_blank">{lib.tr("more")}</a>
+                          </h4>
+                        </legend>
 
-                   {this.number('service', lib.tr("participate"), 1)}
+                        {this.number('service', lib.tr("participate"), 1)}
+                      </div>
+                    )
+                   }
                  </form>
                </div>
 
@@ -139,9 +144,14 @@ module.exports = React.createClass({
     if (!pass)
       return;
 
-    _.each(['normal', 'reduced', 'troop', 'service'],  _.bind(function(field) {
+    _.each(['normal', 'reduced', 'troop'],  _.bind(function(field) {
       data[field] = parseInt(this.refs[field].value || 0);
     }, this));
+
+    if (this.refs['service'] && this.refs['service'].value)
+      data.service = parseInt(this.refs['service'].value);
+    else
+      data.service = 0;
 
     if (data.troop > 0 && data.troop < 10) {
       this.setAlert('warning', lib.tr("mingroup"));
