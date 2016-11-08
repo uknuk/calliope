@@ -161,7 +161,7 @@ module.exports = React.createClass({
     total = data.normal + data.reduced + data.troop;
 
     if (!isNew)
-      free += booking.normal + booking.reduced;
+      free += booking.normal + booking.reduced + booking.troop;
 
     if (total == 0)
       this.setAlert('warning', lib.tr("noplaces"));

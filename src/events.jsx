@@ -80,7 +80,7 @@ module.exports = React.createClass({
     return _.map(this.state.events, function(event) {
       var mode, txt;
 
-      if (event.free > 10) {
+      if (event.free > lib.conf.limited) {
         mode = "success";
         txt = lib.tr("free");
       }

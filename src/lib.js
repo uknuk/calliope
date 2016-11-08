@@ -7,6 +7,7 @@ lib.conf = {
   timezone: "Europe/Helsinki",
   locale: "sv",
   url: "https://oroligatimmen.com/2016/10/08/blog-post-title-2",
+  limited: 15,
   full: [4]
 };
 
