@@ -27,7 +27,7 @@
     "jade": "~1.11.0",
     "jquery": "2.2.3",
     "knex": "0.10.0",
-    "lodash": "~4.11.1",
+    "lodash": "~4.17.19",
     "moment": "2.13.0",
     "moment-timezone": "0.5.3",
     "morgan": "~1.6.1",
